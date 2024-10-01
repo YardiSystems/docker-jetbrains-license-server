@@ -7,8 +7,8 @@ ARG ALPINE_VERSION=3.19
 FROM alpine:${ALPINE_VERSION}
 ENV JLS_PATH="/opt/jetbrains-license-server" \
   TZ="UTC" \
-  PUID="1000" \
-  PGID="1000"
+  PUID="1002" \
+  PGID="1002"
 ARG JLS_SHA256
 RUN apk add --update --no-cache \
     bash \
@@ -31,7 +31,6 @@ RUN apk add --update --no-cache \
   && chown -R jls. /data "$JLS_PATH" \
   && rm -rf /tmp/*
 
-COPY --from=crazymax/yasu:latest / /
 COPY entrypoint.sh /entrypoint.sh
 
 EXPOSE 8000
@@ -39,7 +38,6 @@ WORKDIR /data
 VOLUME [ "/data" ]
 
 ENTRYPOINT [ "/entrypoint.sh" ]
-CMD [ "/usr/local/bin/license-server", "run" ]
 
 HEALTHCHECK --interval=10s --timeout=5s \
   CMD license-server status || exit 1
